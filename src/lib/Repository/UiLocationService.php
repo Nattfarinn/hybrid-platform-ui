@@ -11,6 +11,7 @@ use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use EzSystems\HybridPlatformUi\Repository\Permission\UiPermissionResolver;
 use EzSystems\HybridPlatformUi\Repository\Values\Content\UiLocation;
 
@@ -123,6 +124,36 @@ class UiLocationService
         $this->locationService->swapLocation($currentLocation, $newLocation);
 
         return $this->locationService->loadLocation($currentLocation->id);
+    }
+
+    /**
+     * Trashes locations.
+     * Returns the parent location.
+     *
+     * @param Location $location
+     *
+     * @return Location Parent location of the trashed location
+     *
+     * @throws UnauthorizedException
+     */
+    public function trashLocations(Location $location)
+    {
+        $canRemove = $this->permissionResolver->canRemoveContent(
+            $location->getContentInfo(), $location
+        );
+
+        if (!$canRemove) {
+            throw new UnauthorizedException(
+                'Content',
+                'Remove'
+            );
+        }
+
+        $parentLocationId = $location->parentLocationId;
+
+        $this->locationService->deleteLocation($location);
+
+        return $this->locationService->loadLocation($parentLocationId);
     }
 
     private function buildUiLocations(array $locations)

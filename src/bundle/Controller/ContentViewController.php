@@ -21,6 +21,17 @@ use EzSystems\HybridPlatformUi\View\Content\Relations\ReverseRelationParameterSu
 
 class ContentViewController extends TabController
 {
+    /**
+     * @var UiFormFactory
+     */
+    private $formFactory;
+
+    public function __construct(
+        UiFormFactory $formFactory
+    ) {
+        $this->formFactory = $formFactory;
+    }
+
     public function locationViewAction(
         ContentView $view,
         ContentTypeParameterSupplier $contentTypeParameterSupplier,
@@ -28,6 +39,12 @@ class ContentViewController extends TabController
     ) {
         $contentTypeParameterSupplier->supply($view);
         $locationParameterSupplier->supply($view);
+
+        $trashLocationsForm = $this->formFactory->createLocationsContentTrashForm();
+
+        $view->addParameters([
+            'trashLocationsForm' => $trashLocationsForm->createView(),
+        ]);
 
         return $view;
     }
