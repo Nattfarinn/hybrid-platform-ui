@@ -54,9 +54,8 @@ class ContentViewController extends TabController
         );
 
         $trashLocationsForm = $this->formFactory->createLocationsContentTrashForm(
-            ['disabled'=> $disabled]
+            ['disabled' => $disabled]
         );
-
 
         $view->addParameters([
             'trashLocationsForm' => $trashLocationsForm->createView(),

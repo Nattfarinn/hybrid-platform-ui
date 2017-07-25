@@ -6,7 +6,6 @@
  */
 namespace EzSystems\HybridPlatformUiBundle\Controller;
 
-
 use eZ\Publish\API\Repository\Values\Content\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +14,6 @@ use EzSystems\HybridPlatformUi\Repository\UiLocationService;
 
 class ActionBarController extends Controller
 {
-
     /**
      * @var UiLocationService
      */
