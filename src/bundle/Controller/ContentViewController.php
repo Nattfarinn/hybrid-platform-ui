@@ -10,6 +10,7 @@ namespace EzSystems\HybridPlatformUiBundle\Controller;
 
 use eZ\Publish\Core\MVC\Symfony\View\ContentView;
 use EzSystems\HybridPlatformUi\Form\UiFormFactory;
+use EzSystems\HybridPlatformUi\Repository\Permission\UiPermissionResolver;
 use EzSystems\HybridPlatformUi\Repository\UiFieldGroupService;
 use EzSystems\HybridPlatformUi\Repository\UiSectionService;
 use EzSystems\HybridPlatformUi\Repository\UiTranslationService;
@@ -26,10 +27,17 @@ class ContentViewController extends TabController
      */
     private $formFactory;
 
+    /**
+     * @var UiPermissionResolver
+     */
+    private $permissionResolver;
+
     public function __construct(
-        UiFormFactory $formFactory
+        UiFormFactory $formFactory,
+        UiPermissionResolver $permissionResolver
     ) {
         $this->formFactory = $formFactory;
+        $this->permissionResolver = $permissionResolver;
     }
 
     public function locationViewAction(
@@ -40,7 +48,15 @@ class ContentViewController extends TabController
         $contentTypeParameterSupplier->supply($view);
         $locationParameterSupplier->supply($view);
 
-        $trashLocationsForm = $this->formFactory->createLocationsContentTrashForm();
+        $location = $view->getLocation();
+        $disabled = !$this->permissionResolver->canRemoveContent(
+            $location->getContentInfo(), $location
+        );
+
+        $trashLocationsForm = $this->formFactory->createLocationsContentTrashForm(
+            ['disabled'=> $disabled]
+        );
+
 
         $view->addParameters([
             'trashLocationsForm' => $trashLocationsForm->createView(),

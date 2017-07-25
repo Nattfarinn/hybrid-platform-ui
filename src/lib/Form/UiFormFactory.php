@@ -119,11 +119,13 @@ class UiFormFactory
     /**
      * Create a form to be used for trashing contents location.
      *
+     * @param [] $options of the LocationTrash form
+     *
      * @return \Symfony\Component\Form\FormInterface
      */
-    public function createLocationsContentTrashForm()
+    public function createLocationsContentTrashForm($options)
     {
-        return $this->formFactory->create(LocationTrash::class);
+        return $this->formFactory->create(LocationTrash::class, null, $options);
     }
 
     /**
